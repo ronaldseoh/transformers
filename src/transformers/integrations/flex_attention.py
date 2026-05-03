@@ -27,6 +27,7 @@ Citation:
 # limitations under the License.
 
 from typing import Optional, Union
+from functools import partial
 
 import torch
 from packaging import version
@@ -89,7 +90,7 @@ class WrappedFlexAttention:
                 )
             # Fallback, usually the most recent torch 2.7.x+ versions
             else:
-                self._compiled_flex_attention = torch.compile(flex_attention)
+                self._compiled_flex_attention = torch.compile(partial(flex_attention, kernel_options={"BACKEND": "FLASH"}), dynamic=False)
 
             self._is_flex_compiled = True
 
